@@ -41,9 +41,9 @@ public class AustinSucksActivity extends Activity  {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
-        videoManager = new VideoServerManager(this);
-        controlManager = new ControlServerManager(this);
+        //wsvideoManager = new VideoServerManager(this);
         deviceManager = new DeviceCommManager(this);
+        controlManager = new ControlServerManager(this, deviceManager);
 
     }
 
@@ -51,20 +51,20 @@ public class AustinSucksActivity extends Activity  {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        videoManager.dispose();
+        //videoManager.dispose();
         controlManager.dispose();
         deviceManager.dispose();
     }
     @Override
     public void onResume(){
-        this.videoManager.resume();
+        //this.videoManager.resume();
         this.controlManager.resume();
         this.deviceManager.resume();
         super.onResume();
     }
 
     public void onPause(){
-        this.videoManager.pause();
+        //this.videoManager.pause();
         this.controlManager.pause();
         this.deviceManager.pause();
         super.onPause();

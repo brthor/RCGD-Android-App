@@ -26,6 +26,8 @@ public class DeviceCommManager implements IManager {
 
     public DeviceCommManager(Context c){
         this.context = c;
+        init();
+        sendTestData();
     }
 
     public void init() {
@@ -33,7 +35,27 @@ public class DeviceCommManager implements IManager {
         if(mBt.initialize()){
             mDataStream=mBt.connectToMAC(address);
         }else{
-            Log.d(TAG, "Error initializing Bluetooth");
+
+            Log.d(TAG, "AHHHHHHHHH Error initializing Bluetooth");
+        }
+    }
+
+    public void sendTestData(){
+//        int i = 0;
+//        while(i++ < 10){
+//            this.writeData(XboxControllerInput.A, 1111);
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+
+        try {
+            this.mDataStream.mOutput.write(new byte[] {115,105,109,97,108});
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -50,7 +72,18 @@ public class DeviceCommManager implements IManager {
             b[4] = (byte)input.getKey();
 
             //Second four bytes are the value
-            b[5] = (byte) ()
+            b[5] = (byte) ((0xFF000000 & value) >> 12 );
+            b[6] = (byte) ((0x00FF0000 & value) >> 8 );
+            b[7] = (byte) ((0x0000FF00 & value) >> 4 );
+            b[8] = (byte) ((0x000000FF & value));
+
+
+
+            try {
+                this.mDataStream.mOutput.write(b);
+            } catch (IOException e) {
+                Log.e("Write Data", "Failed to Write Data", e);
+            }
         }else{
             Log.d(TAG, "Unable to write data, not initialized.");
         }
@@ -71,6 +104,7 @@ public class DeviceCommManager implements IManager {
         if(!mBt.isInitialized()){
             mDataStream=mBt.connectToMAC(address);
         }else{
+            mBt.initialize();
             Log.d(TAG,"Error: Bluetooth not initialized");
         }
     }
